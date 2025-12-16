@@ -20,7 +20,7 @@ import ast
 logging.basicConfig(level=logging.INFO)
 # sail.set_print_flag(1)
 
-class YOLOv8:
+class YOLOv5:
     def __init__(self, args):
         # load bmodel
         self.net = sail.Engine(args.bmodel, args.dev_id, sail.IOMode.SYSIO)
@@ -237,13 +237,13 @@ def main(args):
         os.mkdir(output_img_dir) 
     
     # initialize net
-    yolov8 = YOLOv8(args)
-    batch_size = yolov8.batch_size
+    yolov5 = YOLOv5(args)
+    batch_size = yolov5.batch_size
     
     # warm up 
     # for i in range(10):
     #     results = yolov5([np.zeros((640, 640, 3))])
-    yolov8.init()
+    yolov5.init()
     
     decode_time = 0.0
     # test images
