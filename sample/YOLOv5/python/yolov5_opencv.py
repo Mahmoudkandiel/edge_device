@@ -24,11 +24,19 @@ class YOLOv5:
     def __init__(self, args):
         # load bmodel
         self.net = sail.Engine(args.bmodel, args.dev_id, sail.IOMode.SYSIO)
-        logging.info("load {} success!".format(args.bmodel))
         self.graph_name = self.net.get_graph_names()[0]
         self.input_name = self.net.get_input_names(self.graph_name)[0]
+        self.output_name = self.net.get_output_names(self.graph_name)[0]
         self.output_names = self.net.get_output_names(self.graph_name)
         self.input_shape = self.net.get_input_shape(self.graph_name, self.input_name)
+        self.output_shape = self.net.get_output_shape(self.graph_name,self.output_name)
+
+        logging.info("load {} success!".format(args.bmodel))
+        logging.info("graph name: {}".format(self.graph_name))
+        logging.info("input name: {}".format(self.input_name))
+        logging.info("output names: {}".format(self.output_names))
+        logging.info("input shape: {}".format(self.input_shape))        
+        logging.info("output shape: {}".format(self.output_shape))
         if len(self.output_names) not in [1, 3]:
             raise ValueError('only suport 1 or 3 outputs, but got {} outputs bmodel'.format(len(self.output_names)))
 
@@ -146,6 +154,7 @@ class YOLOv5:
                         ord.append(i)
                         break
             out = [outputs[out_keys[i]][:img_num] for i in ord]
+        out = [outputs[self.output_names[0]].transpose(0, 2, 1)]
         return out
     
     def __call__(self, img_list):
