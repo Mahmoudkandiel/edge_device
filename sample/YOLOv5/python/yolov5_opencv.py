@@ -274,10 +274,11 @@ def main(args):
                 filename_list.append(filename)
                 if (len(img_list) == batch_size or cn == len(filenames)) and len(img_list):
                     # predict
+                    logging.info("bbbbbbbbbbbbbbbbb",len(img_list))
                     results = yolov5(img_list)
                     
                     for i, filename in enumerate(filename_list):
-                        print("Processing {} ...".format(filename))
+                        logging.info("Processing {} ...".format(filename))
                         det = results[i]
                         logging.info("det nums: {}".format(det.shape[0]))
                         # save image
