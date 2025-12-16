@@ -185,7 +185,7 @@ class YOLOv5:
             
         start_time = time.time()
         outputs = self.predict(input_img, img_num)
-        logging.debug("--------------outputs : {}".format(outputs))
+        logging.info("--------------outputs : {}".format(outputs))
         self.inference_time += time.time() - start_time
         
         start_time = time.time()
