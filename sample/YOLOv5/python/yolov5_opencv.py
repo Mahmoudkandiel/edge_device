@@ -277,7 +277,9 @@ def main(args):
                     results = yolov5(img_list)
                     
                     for i, filename in enumerate(filename_list):
+                        print("Processing {} ...".format(filename))
                         det = results[i]
+                        logging.info("det nums: {}".format(det.shape[0]))
                         # save image
                         if args.use_cpu_opt:
                             if det.shape[0] >= 1:
@@ -285,6 +287,7 @@ def main(args):
                             else:
                                 res_img = img_list[i]
                         else:
+
                             if det.shape[0] >= 1:
                                 res_img = draw_numpy(img_list[i], det[:,:4], masks=None, classes_ids=det[:, -1], conf_scores=det[:, -2])
                             else:
