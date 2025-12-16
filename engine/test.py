@@ -77,9 +77,9 @@ def postprocess_yolov8(outputs, conf_thres=0.25, iou_thres=0.45):
     return results
 
 def run_yolo_logic():
-    # --- 1. Initialize ---
-    engine = SophonInference(bmodel_path="yolov8n_1688_f16.bmodel", device_id=0)
+    engine = SophonInference(bmodel_path="yolov8n_1688_f16.bmodel")
     input_meta = engine.get_input_details()
+    print(f"Input Meta: {input_meta}")
     input_name = list(input_meta.keys())[0] 
     req_h = input_meta[input_name]['height']
     req_w = input_meta[input_name]['width']
