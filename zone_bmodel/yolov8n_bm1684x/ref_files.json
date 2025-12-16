@@ -1,0 +1,30 @@
+{
+  "version": "v1.25-20251128",
+  "files": {
+    "origin_model": {
+      "path": "../yolov8n.onnx",
+      "last_modify": 1765814552.872294
+    },
+    "origin_mlir": {
+      "path": "../yolov8n_origin.mlir",
+      "last_modify": 1765814598.45274
+    },
+    "top_mlir": {
+      "path": "../yolov8n.mlir",
+      "last_modify": 1765814598.6557405
+    },
+    "tpuc_opt": {
+      "path": "../../usr/local/lib/python3.10/dist-packages/tpu_mlir/bin/tpuc-opt",
+      "last_modify": 1765813127.9111469
+    }
+  },
+  "commands": {
+    "transform_cmd": "/usr/local/lib/python3.10/dist-packages/tpu_mlir/python/tools/model_transform.py --model_name yolov8n --model_def yolov8n.onnx --input_shapes [[1,3,640,640]] --mean 0.0,0.0,0.0 --scale 0.0039216,0.0039216,0.0039216 --pixel_format rgb --mlir yolov8n.mlir",
+    "deploy_cmd": "/usr/local/lib/python3.10/dist-packages/tpu_mlir/python/tools/model_deploy.py --mlir yolov8n.mlir --quantize INT8 --calibration_table yolov8n_cali_table --processor bm1684x --model yolov8n_bm1684x.bmodel"
+  },
+  "properties": {
+    "prefix": "yolov8n_bm1684x_int8_sym",
+    "chip": "bm1684x",
+    "compare_all": false
+  }
+}
