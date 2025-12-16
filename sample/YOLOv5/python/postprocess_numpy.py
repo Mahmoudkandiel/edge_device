@@ -54,26 +54,22 @@ class PostProcess:
         :param txy_batch:       list of (tx, ty) in a batch when resize-and-center-padding
         :return:
         """
-        if isinstance(preds_batch, list) and len(preds_batch) == 3:
-            # 3 output
-            dets = self.decode_for_3outputs(preds_batch)
-        elif isinstance(preds_batch, list) and len(preds_batch) == 1:
-            # 1 output
-            dets = np.concatenate(preds_batch)
+        
+        if isinstance(preds_batch, list):
+                dets = preds_batch[0]
         else:
-            print('preds_batch type: '.format(type(preds_batch)))
-            raise NotImplementedError
+            dets = preds_batch
+            
+        if dets.shape[1] < dets.shape[2]: # Check if shape is [1, 84, 8400]
+            dets = dets.transpose(0, 2, 1)
 
+        # Now pass to NMS
         outs = self.nms.non_max_suppression(
             dets,
             conf_thres=self.conf_thresh,
             iou_thres=self.nms_thresh,
-            classes=None,
-            agnostic=self.agnostic_nms,
             multi_label=self.multi_label,
-            labels=(),
             max_det=self.max_det,
-
         )
 
         # Rescale boxes from img_size to im0 size
@@ -182,8 +178,8 @@ class pseudo_torch_nms:
         """
 
         bs = prediction.shape[0]  # batch size
-        nc = prediction.shape[2] - 5  # number of classes
-        xc = prediction[..., 4] > conf_thres  # candidates
+        nc = prediction.shape[2] - 4  # number of classes
+        xc = np.max(prediction[..., 4:], axis=-1) > conf_thres # candidates
 
         # Checks
         # assert 0 <= conf_thres <= 1, f'Invalid Confidence threshold {conf_thres}, valid values are between 0.0 and 1.0'
@@ -213,13 +209,13 @@ class pseudo_torch_nms:
 
             # Detections matrix nx6 (xyxy, conf, cls)
             if multi_label:
-                i, j = (x[:, 5:] > conf_thres).nonzero()
-                x = np.concatenate([box[i], x[i, j + 5, None], j[:, None].astype(np.float32)], 1)
-            else:  # best class only
-                conf = x[:, 5:].max(1, keepdims=True)
-                j_argmax = x[:, 5:].argmax(1)
-                j = j_argmax if j_argmax.shape == x[:, 5:].shape else \
-                    np.expand_dims(j_argmax, 1)  # for argmax(axis, keepdims=True)
+                # Class scores now start at index 4, not 5
+                i, j = (x[:, 4:] > conf_thres).nonzero()
+                x = np.concatenate([box[i], x[i, j + 4, None], j[:, None].astype(np.float32)], 1)
+            else:
+                # Best class only: scores start at index 4
+                conf = x[:, 4:].max(1, keepdims=True)
+                j = x[:, 4:].argmax(1, keepdims=True)
                 x = np.concatenate([box, conf, j.astype(np.float32)], 1)[conf.reshape(-1) > conf_thres]
 
             # Check shape
