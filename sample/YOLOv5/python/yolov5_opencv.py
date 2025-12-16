@@ -200,6 +200,7 @@ class YOLOv5:
 
 def draw_numpy(image, boxes, masks=None, classes_ids=None, conf_scores=None):
     logging.debug("boxes shape: {}, classes_ids shape: {}, conf_scores shape: {}".format(boxes.shape, None if classes_ids is None else classes_ids.shape, None if conf_scores is None else conf_scores.shape))
+    print("ooooooooooooooooooooooooo",boxes)
     for idx in range(len(boxes)):
         x1, y1, x2, y2 = boxes[idx, :].astype(np.int32).tolist()
         logging.debug("class id={}, score={}, (x1={},y1={},x2={},y2={})".format(classes_ids[idx],conf_scores[idx], x1, y1, x2, y2))
