@@ -84,7 +84,7 @@ def run_yolo_logic():
     req_h = input_meta[input_name]['height']
     req_w = input_meta[input_name]['width']
 
-    # --- 2. Preprocess ---
+
     image_path = "test.jpg"
     orig_img = cv2.imread(image_path)
     if orig_img is None:
